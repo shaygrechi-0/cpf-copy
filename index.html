@@ -51,9 +51,9 @@
       btn.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(cpf);
-          status.textContent = "CPF copiado ✔";
+          status.textContent = "CPF copiado! Agora basta abrir o app do seu banco e colar a chave Pix.";
         } catch (err) {
-          status.innerHTML = `Não deu 😞.<br>Copie: <b>${cpf}</b>`;
+          status.innerHTML = `Não foi possível copiar 😞.<br>Clique e copie manualmente: <b>${cpf}</b>`;
         } finally {
           // Esconde o botão após a tentativa (sucesso ou falha)
           btn.style.display = "none";
