@@ -26,51 +26,39 @@
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
         cursor: pointer;
+        transition: opacity 0.25s ease;
+      }
+      button[disabled] {
+        opacity: 0.4;
+        cursor: default;
       }
       #status {
         margin-top: var(--gap);
-        font-size: 1.1rem;
+        font-size: 1rem;
         line-height: 1.4;
-      }
-      /* input invisível usado como fallback */
-      #cpfRaw {
-        position: absolute;
-        left: -9999px;
       }
     </style>
   </head>
   <body>
-    <button id="copy">Copiar CPF</button>
-    <div id="status">Toque no botão para copiar</div>
-    <input id="cpfRaw" value="143.637.969-52" readonly />
+    <button id="copyBtn">Copiar CPF</button>
+    <div id="status" role="status" aria-live="polite"></div>
 
     <script>
       const cpf = "143.637.969-52";
-      const btn = document.getElementById("copy");
+      const btn = document.getElementById("copyBtn");
       const status = document.getElementById("status");
-      const hiddenInput = document.getElementById("cpfRaw");
 
-      // Fallback para navegadores sem Clipboard API ou que exijam user gesture de outra forma
-      function fallbackCopy() {
-        hiddenInput.select();
-        document.execCommand("copy");
-      }
-
-      async function copyCPF() {
+      btn.addEventListener("click", async () => {
         try {
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            await navigator.clipboard.writeText(cpf);
-          } else {
-            fallbackCopy();
-          }
-          status.textContent = "CPF copiado ✔️";
+          await navigator.clipboard.writeText(cpf);
+          status.textContent = "CPF copiado ✔";
         } catch (err) {
-          // Se falhar, mostra CPF para cópia manual
-          status.innerHTML = `Não foi possível copiar automaticamente 😞<br/>Copie manualmente: <strong>${cpf}</strong>`;
+          status.innerHTML = `Não deu 😞.<br>Copie: <b>${cpf}</b>`;
+        } finally {
+          // Esconde o botão após a tentativa (sucesso ou falha)
+          btn.style.display = "none";
         }
-      }
-
-      btn.addEventListener("click", copyCPF, { passive: true });
+      });
     </script>
   </body>
 </html>
