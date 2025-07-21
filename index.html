@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Copiar CPF</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: sans-serif;
+      }
+      #msg {
+        font-size: 1.25rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="msg">Copiando…</div>
+
+    <script>
+      const cpf = "143.637.969-52";
+      navigator.clipboard
+        .writeText(cpf)
+        .then(() => {
+          document.getElementById("msg").textContent = "CPF copiado ✔";
+        })
+        .catch(() => {
+          document.getElementById("msg").innerHTML = `Não deu 😞.<br>Copie: <b>${cpf}</b>`;
+        });
+    </script>
+  </body>
+</html>
