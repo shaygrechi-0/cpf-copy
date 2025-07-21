@@ -2,35 +2,75 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Copiar CPF</title>
     <style>
+      :root {
+        --gap: 24px;
+      }
       body {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
-        font-family: sans-serif;
-      }
-      #msg {
-        font-size: 1.25rem;
+        padding: var(--gap);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         text-align: center;
+      }
+      button {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
+      }
+      #status {
+        margin-top: var(--gap);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      /* input invisível usado como fallback */
+      #cpfRaw {
+        position: absolute;
+        left: -9999px;
       }
     </style>
   </head>
   <body>
-    <div id="msg">Copiando…</div>
+    <button id="copy">Copiar CPF</button>
+    <div id="status">Toque no botão para copiar</div>
+    <input id="cpfRaw" value="143.637.969-52" readonly />
 
     <script>
       const cpf = "143.637.969-52";
-      navigator.clipboard
-        .writeText(cpf)
-        .then(() => {
-          document.getElementById("msg").textContent = "CPF copiado ✔";
-        })
-        .catch(() => {
-          document.getElementById("msg").innerHTML = `Não deu 😞.<br>Copie: <b>${cpf}</b>`;
-        });
+      const btn = document.getElementById("copy");
+      const status = document.getElementById("status");
+      const hiddenInput = document.getElementById("cpfRaw");
+
+      // Fallback para navegadores sem Clipboard API ou que exijam user gesture de outra forma
+      function fallbackCopy() {
+        hiddenInput.select();
+        document.execCommand("copy");
+      }
+
+      async function copyCPF() {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(cpf);
+          } else {
+            fallbackCopy();
+          }
+          status.textContent = "CPF copiado ✔️";
+        } catch (err) {
+          // Se falhar, mostra CPF para cópia manual
+          status.innerHTML = `Não foi possível copiar automaticamente 😞<br/>Copie manualmente: <strong>${cpf}</strong>`;
+        }
+      }
+
+      btn.addEventListener("click", copyCPF, { passive: true });
     </script>
   </body>
 </html>
